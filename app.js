@@ -2,6 +2,10 @@ const categoryContainer = document.getElementById("category-container");
 const categoryBtn = document.getElementById("btn-category");
 const count = document.getElementById("count");
 const newsContainer = document.getElementById("news-container");
+const showDetails = document.getElementById("showDetails");
+const modalTitle = document.getElementById("modal-title");
+const modalImage = document.getElementById("modal-image");
+const modalDescription = document.getElementById("modal-description");
 
 // fetch catagory data from api
 const FetchCatagory = async () => {
@@ -38,7 +42,7 @@ const displayNewsById = (news) => {
   newsContainer.innerHTML = "";
   // news display start here
   news.forEach(
-    ({ rating, thumbnail_url, title, details, author, total_view }) => {
+    ({ _id, rating, thumbnail_url, title, details, author, total_view }) => {
       newsContainer.innerHTML += `
     <div class="card mb-3 p-2">
     <div class="row g-0">
@@ -82,7 +86,7 @@ const displayNewsById = (news) => {
               <i class="fa-regular fa-star"></i>
               <span class="fw-semibold ">${rating.number}</span>
             </div>
-            <i class="fa-solid fa-arrow-right fa-2x text-primary"></i>
+            <i id="showDetails" onclick="fetchMoreDetails('${_id}')" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="fa-solid fa-arrow-right fa-2x text-primary" ></i>
           </div>
         </div>
       </div>
@@ -92,6 +96,18 @@ const displayNewsById = (news) => {
     }
   );
 };
+// modal open
+const fetchMoreDetails = async (news_id) => {
+  const URL = `https://openapi.programming-hero.com/api/news/${news_id}`;
+  const res = await fetch(URL);
+  const data = await res.json();
+  displayMoreDetails(data.data[0]);
+};
+const displayMoreDetails = ({ title, image_url, details }) => {
+  modalTitle.innerText = title;
+  modalImage.src = image_url;
+  modalDescription.innerText = details;
+};
 
 FetchCatagory();
-fetchNewsById('08');
+fetchNewsById("08");
