@@ -6,6 +6,7 @@ const showDetails = document.getElementById("showDetails");
 const modalTitle = document.getElementById("modal-title");
 const modalImage = document.getElementById("modal-image");
 const modalDescription = document.getElementById("modal-description");
+const spinnner = document.getElementById("spinnner");
 
 // fetch catagory data from api
 const FetchCatagory = async () => {
@@ -28,23 +29,25 @@ const loadCatagories = (categories) => {
 
 // fetch News Data by id when click
 const fetchNewsById = async (category_id) => {
+  spin(true);
   const URL = `https://openapi.programming-hero.com/api/news/category/${category_id}`;
   const res = await fetch(URL);
   const data = await res.json();
+
   displayNewsById(data.data);
 };
 
 // display news by catagory Id
 const displayNewsById = (news) => {
   count.innerText = news.length;
-  console.log(news);
+
   // empty container when new news appered
   newsContainer.innerHTML = "";
   // news display start here
   news.forEach(
     ({ _id, rating, thumbnail_url, title, details, author, total_view }) => {
       newsContainer.innerHTML += `
-    <div class="card mb-3 p-2">
+    <div class="card mb-3  p-3 shadow-lg border-0">
     <div class="row g-0">
       <div class="col-md-2">
         <img
@@ -57,10 +60,10 @@ const displayNewsById = (news) => {
         <div class="card-body">
           <h5 class="card-title h3">${title}</h5>
           <p class="card-text">
-          ${details}
+          ${details.slice(0, 700)}
           </p>
           <div
-            class="d-flex justify-content-between align-items-center p-0 gap-3"
+            class="d-flex justify-content-between align-items-center p-0"
           >
             <!-- profile section -->
             <div class="d-flex align-items-center gap-2">
@@ -70,8 +73,12 @@ const displayNewsById = (news) => {
                 alt="person"
               />
               <div>
-                <span class="d-block fw-semibold text-black">${author.name}</span>
-                <span class="d-block text-secondary">${author.published_date}</span>
+                <span class="d-block fw-semibold text-black">${
+                  author.name
+                }</span>
+                <span class="d-block text-secondary">${
+                  author.published_date
+                }</span>
               </div>
             </div>
             <!-- view count section -->
@@ -95,6 +102,7 @@ const displayNewsById = (news) => {
     `;
     }
   );
+  spin(false);
 };
 // modal open
 const fetchMoreDetails = async (news_id) => {
@@ -108,6 +116,10 @@ const displayMoreDetails = ({ title, image_url, details }) => {
   modalImage.src = image_url;
   modalDescription.innerText = details;
 };
-
+const spin = (isSpin) => {
+  if (isSpin) spinnner.classList.remove("d-none");
+  else spinnner.classList.add("d-none");
+};
+spin(true);
 FetchCatagory();
 fetchNewsById("08");
